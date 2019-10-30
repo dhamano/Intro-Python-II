@@ -1,4 +1,6 @@
 from room import Room
+from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -49,3 +51,46 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+player = {}
+
+def get_name():
+    username = input("What's your name? ")
+    return username
+
+def get_input():
+    cmd_in = input("action: ")
+    return cmd_in
+
+def eval_input(the_input):
+    if the_input == 'n':
+        print(f"north")
+        cmd_center()
+    if the_input == 's':
+        print(f"south")
+        cmd_center()
+    if the_input == 'e':
+        print(f"east")
+        cmd_center()
+    if the_input == 'w':
+        print(f"west")
+        cmd_center()
+
+def setup():
+    name = get_name()
+    if not name or len(name.strip()) == 0:
+        get_name()
+    else:
+        global player
+        player = Player(name, 'outside')
+    cmd_center()
+
+def cmd_center():
+    the_rm = player.current_room
+    room[the_rm].desc
+    the_input = get_input()
+    if not the_input or len(the_input.strip()) == 0:
+        cmd_center()
+    else:
+        eval_input(the_input)
+
+setup()
