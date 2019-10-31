@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from item import Item
+from cmd import Cmd
 
 # Declare all the rooms
 
@@ -57,40 +58,79 @@ def get_name():
     username = input("What's your name? ")
     return username
 
-def get_input():
-    cmd_in = input("action: ")
-    return cmd_in
-
-def eval_input(the_input):
-    if the_input == 'n':
-        print(f"north")
-        cmd_center()
-    if the_input == 's':
-        print(f"south")
-        cmd_center()
-    if the_input == 'e':
-        print(f"east")
-        cmd_center()
-    if the_input == 'w':
-        print(f"west")
-        cmd_center()
-
 def setup():
     name = get_name()
     if not name or len(name.strip()) == 0:
         get_name()
     else:
         global player
-        player = Player(name, 'outside')
-    cmd_center()
-
-def cmd_center():
-    the_rm = player.current_room
-    room[the_rm].desc
-    the_input = get_input()
-    if not the_input or len(the_input.strip()) == 0:
-        cmd_center()
-    else:
-        eval_input(the_input)
+        player = Player(name, room['outside'])
 
 setup()
+
+def get_directions(the_rm):
+    dir = []
+    if the_rm.n_to != None:
+        dir.append('n')
+    if the_rm.w_to != None:
+        dir.append('w')
+    if the_rm.e_to != None:
+        dir.append('e')
+    if the_rm.s_to != None:
+        dir.append('s')
+    d = ", ".join(dir)
+    dir = f"You can go: {d}"
+    return dir
+ 
+def get_output(dir):
+    if dir != None:
+        player.set_current_room(dir)
+        the_rm = player.current_room
+        print(f"\n\n\n{the_rm.desc}\n")
+        directions = get_directions(the_rm)
+        print(f"{directions}")
+    else:
+        print("\n\n\nYou can't go that way")
+
+class AppCmd(Cmd):
+    global player
+    the_rm = player.current_room
+    prompt = "What do you want to do? "
+    dir = get_directions(the_rm)
+    intro = f"\n\n\n{the_rm.desc}\n\n{dir}"
+
+    def do_n(self, q):
+        the_rm = player.current_room
+        dir = the_rm.n_to
+        get_output(dir)
+    
+    def do_s(self, q):
+        the_rm = player.current_room
+        dir = the_rm.s_to
+        get_output(dir)
+    
+    def do_e(self, q):
+        the_rm = player.current_room
+        dir = the_rm.e_to
+        get_output(dir)
+    
+    def do_w(self, q):
+        the_rm = player.current_room
+        dir = the_rm.w_to
+        get_output(dir)
+    
+    def do_get(self, q):
+        print('getting item')
+    
+    def do_take(self, q):
+        print('taking item')
+    
+    def do_exit(self, q):
+        return True
+    
+    def do_quit(self, q):
+        return True
+
+
+if __name__ == '__main__':
+    AppCmd().cmdloop()

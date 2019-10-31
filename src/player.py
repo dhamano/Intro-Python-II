@@ -6,8 +6,14 @@ class Player:
         self.current_room = current_room
         self.items = items
     
-    def __str__(self):
-        return f"{self.name} at {self.current_room}"
+    # def __str__(self):
+    #     return f"{self.name} at {self.current_room}"
     
-    def __repr__(self):
-        return f"Person(repr{self.name}, repr{self.current_room})"
+    # def __repr__(self):
+    #     return f"Person(repr{self.name}, repr{self.current_room})"
+    
+    def set_current_room(self, rm):
+        self.current_room = rm
+
+    def add_item(self, item):
+        self.items.append(item)

@@ -2,17 +2,17 @@
 # description attributes.
 
 class Room:
-    def __init__(self, name, desc, items=[]):
+    def __init__(self, name, desc="", items=[]):
         self.name = name
         self.desc = desc
         self.items = items
-        self.n_room = None
-        self.s_room = None
-        self.e_room = None
-        self.w_room = None
+        self.n_to = None
+        self.s_to = None
+        self.e_to = None
+        self.w_to = None
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} {self.n_to} {self.s_to} {self.w_to} {self.e_to}"
     
     def __repr__(self):
         return f"Person(repr{self.name}"
@@ -21,16 +21,3 @@ class Room:
         self.item.append(item)
     
     # def rem_item(self, item):
-       
-    
-    def n_to(room):
-        self.n_room = room
-    
-    def s_to(room):
-        self.s_room = room
-    
-    def e_to(room):
-        self.e_room = room
-    
-    def n_to(room):
-        self.n_room = room
