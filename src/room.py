@@ -15,9 +15,10 @@ class Room:
         return f"{self.name} {self.n_to} {self.s_to} {self.w_to} {self.e_to}"
     
     def __repr__(self):
-        return f"Person(repr{self.name}"
+        return f"Person({repr(self.name)})"
     
     def add_item(self, item):
-        self.item.append(item)
+        self.items.append(item)
     
-    # def rem_item(self, item):
+    def rem_item(self, item):
+        self.items.remove(item);

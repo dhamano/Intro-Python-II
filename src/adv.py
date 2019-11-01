@@ -7,17 +7,18 @@ from cmd import Cmd
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons",
+                     [Item("apple", "Apples are overrated."), Item("note", "A simple missive to nothing.")]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", [Item("old note", "Nothing, nothing, nothing!")]),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
 the distance, but there is no way across the chasm."""),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", [Item("bucket of gold", "a useless bucket of gold.")]),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
@@ -92,6 +93,32 @@ def get_output(dir):
     else:
         print("\n\n\nYou can't go that way")
 
+def add_item(verb, q):
+    the_rm = player.current_room
+    the_items = the_rm.items
+    item_to_add = False
+    for item in the_items:
+        # print(f"ITEM FOR LOOP {item.name} | {q}")
+        if item.name == q:
+            player.add_item(item)
+            the_rm.rem_item(item)
+            item_to_add = True
+    if not item_to_add:
+        print(f"\n\n\nThere is no item called {q}\n\n")
+    else:
+        print(f"\n\n\nYou {verb} the {q}\n\n")
+        # print(f"items: {the_items}")
+
+def get_inventory():
+    the_items = player.items
+    if len(the_items) < 1:
+        print("\n\n\nYou are carrying nothing\n")
+    else:
+        print("\n\n\nInventory:")
+        for i, item in enumerate(the_items, start=1):
+            print(f"\t{i}. {item.name}")
+        print("\n\n")
+
 class AppCmd(Cmd):
     global player
     the_rm = player.current_room
@@ -120,13 +147,48 @@ class AppCmd(Cmd):
         get_output(dir)
     
     def do_get(self, q):
-        print('getting item')
+        add_item("get", q)
     
     def do_take(self, q):
-        print('taking item')
+        add_item("take", q)
+    
+    def do_drop(self, q):
+        the_rm = player.current_room
+        the_items = player.items
+        item_to_remove = False
+        for item in the_items:
+            if item.name == q:
+                player.rem_item(item)
+                the_rm.add_item(item)
+                item_to_remove = True
+        if not item_to_remove:
+            print(f"\n\n\nThere is no item called {q}\n\n")
+        else:
+            print(f'\n\n\nYou drop item {q}\n\n')
+    
+    def do_inventory(self, q):
+        get_inventory()
+    
+    def do_inv(self, q):
+        get_inventory()
     
     def do_exit(self, q):
-        return True
+        dir = get_directions(player.current_room)
+        print(f"\n\n\n{dir}\n\n")
+    
+    def do_look(self, q):
+        the_rm = player.current_room
+        dir = get_directions(the_rm)
+        print(f"\n\n\n{the_rm.desc}\n{dir}\n")
+        the_items = player.current_room.items
+        if len(the_items) < 1:
+            print("There is nothing")
+        else:
+            print(f'')
+            print("You also see:")
+            for i, item in enumerate(the_items, start=1):
+                print(f"\t{i}. {item.name}")
+            print("\n")
     
     def do_quit(self, q):
         return True
